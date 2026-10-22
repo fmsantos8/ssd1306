@@ -34,8 +34,8 @@ struct ssd1306_config {
  * recommended; cmp_ssd1306_init() supplies all initial values, even for automatic storage.
  */
 struct ssd1306 {
-    hal_i2c_t *i2c;                                /** Borrowed bus handle. */
-    uint8_t address;                               /** Borrowed device address. */
+    hal_i2c_t *i2c;                                /** I2C bus handle. */
+    uint8_t address;                               /** Device address. */
     uint8_t framebuffer[SSD1306_FRAMEBUFFER_SIZE]; /** Page-major pixels, bit zero at the top of each page. */
     uint8_t dirty_pages;                           /** One bit per page requiring transfer. */
     bool initialized;                              /** True only after a complete successful initialization. */
