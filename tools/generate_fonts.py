@@ -201,7 +201,7 @@ static const ssd1306_font_data_t fonts[] = {
 
 // clang-format on
 
-const ssd1306_font_data_t *ssd1306_font_get(ssd1306_font_t font) {
+const ssd1306_font_data_t *cmp_ssd1306_font_get(ssd1306_font_t font) {
     if ((uint32_t)font >= (uint32_t)(sizeof(fonts) / sizeof(fonts[0]))) {
         return NULL;
     }

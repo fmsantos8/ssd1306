@@ -31,7 +31,7 @@ struct ssd1306_config {
  *
  * @details Declare this in the composition root and pass ssd1306_t pointers to
  * consumers. No singleton or HAL arena allocation is used. A static instance is
- * recommended; init() supplies all initial values, even for automatic storage.
+ * recommended; cmp_ssd1306_init() supplies all initial values, even for automatic storage.
  */
 struct ssd1306 {
     hal_i2c_t *i2c;                                /** Borrowed bus handle. */

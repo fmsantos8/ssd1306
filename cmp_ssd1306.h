@@ -6,7 +6,7 @@
  * Serialize calls and shared-bus access in normal context; no ISR or
  * synchronization support. Context and bus must outlive their uses; inputs and
  * outputs must not overlap context storage. No dynamic allocation is used.
- * Except init(), calls require a previously initialized or zeroed context.
+ * Except cmp_ssd1306_init(), calls require a previously initialized or zeroed context.
  * Drawing changes RAM only, validates bounds before editing, and never clips.
  * Coordinates start at the top left. Storage/configuration: cmp_ssd1306_config.h.
  */
@@ -32,7 +32,7 @@ extern "C" {
  *
  * @details Initializes all context fields; no prior zeroing required. Invalid
  * arguments preserve the context. A transfer failure leaves it unavailable and
- * may partly configure the panel. Retry init() to recover; existing drawing is lost.
+ * may partly configure the panel. Retry cmp_ssd1306_init() to recover; existing drawing is lost.
  * Transfers are synchronous and use the supplied bus timeout.
  *
  * @param[out] display Required caller-owned context.
@@ -45,7 +45,7 @@ extern "C" {
  * @retval SSD1306_STATUS_TIMEOUT I2C driver timeout expired.
  * @retval SSD1306_STATUS_COMMUNICATION_ERROR I2C transfer failed.
  */
-ssd1306_status_t ssd1306_init(ssd1306_t *display, const ssd1306_config_t *config);
+ssd1306_status_t cmp_ssd1306_init(ssd1306_t *display, const ssd1306_config_t *config);
 
 /**
  * @brief Clear the framebuffer and mark changed pages for update.
@@ -56,7 +56,7 @@ ssd1306_status_t ssd1306_init(ssd1306_t *display, const ssd1306_config_t *config
  * @retval SSD1306_STATUS_INVALID_ARGUMENT display is NULL.
  * @retval SSD1306_STATUS_NOT_INITIALIZED Context is unavailable.
  */
-ssd1306_status_t ssd1306_clear(ssd1306_t *display);
+ssd1306_status_t cmp_ssd1306_clear(ssd1306_t *display);
 
 /**
  * @brief Set or clear a nonempty rectangle entirely inside the panel.
@@ -72,7 +72,7 @@ ssd1306_status_t ssd1306_clear(ssd1306_t *display);
  * @retval SSD1306_STATUS_INVALID_ARGUMENT NULL context, zero size, or invalid bounds.
  * @retval SSD1306_STATUS_NOT_INITIALIZED Context is unavailable.
  */
-ssd1306_status_t ssd1306_fill_rect(ssd1306_t *display, uint32_t x, uint32_t y, uint32_t width, uint32_t height, bool on);
+ssd1306_status_t cmp_ssd1306_fill_rect(ssd1306_t *display, uint32_t x, uint32_t y, uint32_t width, uint32_t height, bool on);
 
 /**
  * @brief Set or clear a line, including both endpoints, inside the panel.
@@ -88,13 +88,13 @@ ssd1306_status_t ssd1306_fill_rect(ssd1306_t *display, uint32_t x, uint32_t y, u
  * @retval SSD1306_STATUS_INVALID_ARGUMENT NULL context or endpoint outside the panel.
  * @retval SSD1306_STATUS_NOT_INITIALIZED Context is unavailable.
  */
-ssd1306_status_t ssd1306_draw_line(ssd1306_t *display, uint32_t x0, uint32_t y0, uint32_t x1, uint32_t y1, bool on);
+ssd1306_status_t cmp_ssd1306_draw_line(ssd1306_t *display, uint32_t x0, uint32_t y0, uint32_t x1, uint32_t y1, bool on);
 
 /**
  * @brief Draw white text on a transparent background.
  *
  * @details Supports each font's character set, without wrapping or newlines.
- * The entire font-height box must fit, even for empty text. Use fill_rect() to
+ * The entire font-height box must fit, even for empty text. Use cmp_ssd1306_fill_rect() to
  * erase an old value before drawing its replacement.
  *
  * @param[in,out] display Required initialized context.
@@ -108,24 +108,24 @@ ssd1306_status_t ssd1306_draw_line(ssd1306_t *display, uint32_t x0, uint32_t y0,
  * @retval SSD1306_STATUS_NOT_INITIALIZED Context is unavailable.
  * @retval SSD1306_STATUS_NOT_SUPPORTED Font or character is unavailable.
  */
-ssd1306_status_t ssd1306_draw_text(ssd1306_t *display, uint32_t x, uint32_t y, const char *text, ssd1306_font_t font);
+ssd1306_status_t cmp_ssd1306_draw_text(ssd1306_t *display, uint32_t x, uint32_t y, const char *text, ssd1306_font_t font);
 
 /**
- * @brief Measure the text box used by draw_text(), without a display.
+ * @brief Measure the text box used by cmp_ssd1306_draw_text(), without a display.
  *
  * @details Width includes one pixel between glyphs, with no trailing gap. Empty
  * text has zero width and the font's fixed height. Outputs change only on success.
  *
  * @param[in] text Required NUL-terminated text; may be empty.
  * @param[in] font Built-in font selection.
- * @param[out] out_width Required width output in pixels.
- * @param[out] out_height Required height output in pixels; must differ from out_width.
+ * @param[out] width Required width output in pixels.
+ * @param[out] height Required height output in pixels; must differ from width.
  *
  * @retval SSD1306_STATUS_OK Dimensions written.
  * @retval SSD1306_STATUS_INVALID_ARGUMENT NULL pointer, aliased outputs, or width overflow.
  * @retval SSD1306_STATUS_NOT_SUPPORTED Font or character is unavailable.
  */
-ssd1306_status_t ssd1306_measure_text(const char *text, ssd1306_font_t font, uint32_t *out_width, uint32_t *out_height);
+ssd1306_status_t cmp_ssd1306_measure_text(const char *text, ssd1306_font_t font, uint32_t *width, uint32_t *height);
 
 /**
  * @brief Copy an opaque bitmap entirely inside the panel into the framebuffer.
@@ -139,7 +139,7 @@ ssd1306_status_t ssd1306_measure_text(const char *text, ssd1306_font_t font, uin
  * @retval SSD1306_STATUS_INVALID_ARGUMENT Invalid pointer, bitmap, or bounds.
  * @retval SSD1306_STATUS_NOT_INITIALIZED Context is unavailable.
  */
-ssd1306_status_t ssd1306_draw_bitmap(ssd1306_t *display, uint32_t x, uint32_t y, const ssd1306_bitmap_t *bitmap);
+ssd1306_status_t cmp_ssd1306_draw_bitmap(ssd1306_t *display, uint32_t x, uint32_t y, const ssd1306_bitmap_t *bitmap);
 
 /**
  * @brief Transfer at most one dirty 128x8 page and report pending work.
@@ -150,7 +150,7 @@ ssd1306_status_t ssd1306_draw_bitmap(ssd1306_t *display, uint32_t x, uint32_t y,
  * the output is unchanged; retry resends both writes. Reinit/redraw after a reset.
  *
  * @param[in,out] display Required initialized context.
- * @param[out] out_pending Required output; true if dirty pages remain after success.
+ * @param[out] pending Required output; true if dirty pages remain after success.
  *
  * @retval SSD1306_STATUS_OK Page sent, or no pending work.
  * @retval SSD1306_STATUS_INVALID_ARGUMENT Invalid pointer or I2C argument.
@@ -159,7 +159,7 @@ ssd1306_status_t ssd1306_draw_bitmap(ssd1306_t *display, uint32_t x, uint32_t y,
  * @retval SSD1306_STATUS_TIMEOUT I2C driver timeout expired.
  * @retval SSD1306_STATUS_COMMUNICATION_ERROR I2C transfer failed.
  */
-ssd1306_status_t ssd1306_update(ssd1306_t *display, bool *out_pending);
+ssd1306_status_t cmp_ssd1306_update(ssd1306_t *display, bool *pending);
 
 #ifdef __cplusplus
 }

@@ -24,6 +24,6 @@ typedef struct {
 } ssd1306_font_data_t;
 
 /** @brief Return immutable font data, or NULL for an unsupported selection. */
-const ssd1306_font_data_t *ssd1306_font_get(ssd1306_font_t font);
+const ssd1306_font_data_t *cmp_ssd1306_font_get(ssd1306_font_t font);
 
 #endif
