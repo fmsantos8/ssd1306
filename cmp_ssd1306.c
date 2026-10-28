@@ -238,8 +238,14 @@ ssd1306_status_t cmp_ssd1306_draw_text(ssd1306_t *display, uint32_t x, uint32_t 
     const uint8_t *cursor = (const uint8_t *)text;
     while (*cursor != 0) {
         uint32_t codepoint;
-        cmp_ssd1306_next_codepoint(&cursor, &codepoint);
+        status = cmp_ssd1306_next_codepoint(&cursor, &codepoint);
+        if (status != SSD1306_STATUS_OK) {
+            return status;
+        }
         const ssd1306_glyph_t *glyph = cmp_ssd1306_find_glyph(data, codepoint);
+        if (glyph == NULL) {
+            return SSD1306_STATUS_NOT_SUPPORTED;
+        }
         uint32_t stride = (glyph->width + 7U) / 8U;
         for (uint32_t row = 0; row < data->height; ++row) {
             for (uint32_t column = 0; column < glyph->width; ++column) {
